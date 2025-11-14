@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Para mi angelito💛</title>
+
+<style>
+    body {
+        background: #fff7fb;
+        font-family: "Playfair Display", serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    h1 {
+        color: #ff87b0;
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    #phraseBox {
+        background: white;
+        padding: 22px;
+        width: 80%;
+        max-width: 380px;
+        border-radius: 18px;
+        font-size: 20px;
+        text-align: center;
+        min-height: 90px;
+        border: 2px solid #ffb7d5;
+        box-shadow: 0 0 15px #ffd9ea;
+        animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0 }
+        to { opacity: 1 }
+    }
+
+    #mainBtn {
+        margin-top: 25px;
+        background: #ff87b0;
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        font-size: 18px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.3s;
+        animation: heartbeat 1.6s infinite ease-in-out;
+    }
+
+    @keyframes heartbeat {
+        0% { transform: scale(1); }
+        30% { transform: scale(1.08); }
+        50% { transform: scale(1); }
+        70% { transform: scale(1.08); }
+        100% { transform: scale(1); }
+    }
+
+    #mainBtn:hover {
+        background: #ff5f98;
+    }
+
+    /* Controles de audio */
+    #controls {
+        margin-top: 25px;
+        text-align: center;
+    }
+
+    #playPause {
+        background: #ffd1e6;
+        border: none;
+        padding: 8px 14px;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    #vol {
+        width: 200px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Para mi angelito🩷</h1>
+
+<div id="phraseBox"></div>
+
+<button id="mainBtn">Toca mi amor🩷</button>
+
+<div id="controls">
+    <button id="playPause">Play ♫</button>
+    <br>
+    Volumen: <input type="range" id="vol" min="0" max="1" step="0.01" value="0.5">
+</div>
+
+<!-- ⭐ AUDIO ⭐ -->
+<audio id="bgMusic" src="https://n.uguu.se/gLctCnSp.mp3" preload="auto"></audio>
+
+<script>
+/* ====== TUS FRASES EN ORDEN ====== */
+const phrases = [
+    "Eres mi lugar favorito.",
+    "Me haces sentir paz en el alma.",
+    "Eres lo más bonito que me ha pasado.",
+    "Si supieras lo mucho que te pienso...",
+    "Mi corazón late más bonito por ti.",
+    "Eres como el amanecer: iluminas todo.",
+    "Eres hermoso sin esfuerzo.",
+    "Tienes una mirada que destaca.",
+    "Tu sonrisa tiene algo especial.",
+    "Eres mi lirio entre un montón de flores hermosas.",
+    "Eres mi bebé tiquito.",
+    "Inteligente y trabajador, así eres.",
+    "Bonito por dentro y por fuera.",
+    "Me encanta tu forma de pensar.",
+    "Amo cada parte de ti, amo tus inseguridades.",
+    "Tienes estilo y mucha personalidad.",
+    "Eres fuerte, pero también muy dulce.",
+    "Brillas sin hacer ruido.",
+    "Tu vibra es de las que se quedan.",
+    "Quiero estar contigo toda la vida.",
+    "Me encantas sin intentarlo.",
+    "Naturalmente lindo.",
+    "Siempre de buen gusto.",
+    "Sabes estar sin querer llamar la atención.",
+    "Eres increíble.",
+    "Eres único.",
+    "Tu corazón es tan lindo como tú.",
+    "Hay algo en ti que es simplemente especial.",
+    "Eres el amor de mi vida, de mi alma.",
+    "Tu esencia es preciosa.",
+    "Eres alguien que deja huella.",
+    "Tu presencia se siente como un hogar.",
+    "Eres un poema con ojos."
+];
+
+/* Control de orden */
+let index = 0;
+
+/* ELEMENTOS */
+const phraseBox = document.getElementById("phraseBox");
+const mainBtn = document.getElementById("mainBtn");
+const playPause = document.getElementById("playPause");
+const volSlider = document.getElementById("vol");
+const audioElem = document.getElementById("bgMusic");
+
+/* ====== MÁQUINA DE ESCRIBIR ====== */
+let typingTimer = null;
+
+function typeWriter(text, speed = 55) {
+    if (typingTimer) clearTimeout(typingTimer);
+    phraseBox.textContent = "";
+    let i = 0;
+
+    function step() {
+        if (i < text.length) {
+            phraseBox.textContent += text.charAt(i);
+            i++;
+            typingTimer = setTimeout(step, speed);
+        }
+    }
+    step();
+}
+
+/* ====== FADER ====== */
+function fadeInAudio(target = parseFloat(volSlider.value)) {
+    audioElem.volume = 0;
+    let v = 0;
+    const fade = setInterval(() => {
+        v += 0.02;
+        audioElem.volume = Math.min(v, target);
+        if (v >= target) clearInterval(fade);
+    }, 100);
+}
+
+/* ====== PLAY ====== */
+function playMusic() {
+    audioElem.play().then(() => {
+        fadeInAudio();
+        playPause.textContent = "Pause ♫";
+    });
+}
+
+/* ====== PAUSE ====== */
+function pauseMusic() {
+    audioElem.pause();
+    playPause.textContent = "Play ♫";
+}
+
+/* ====== CLICK PRINCIPAL ====== */
+mainBtn.addEventListener("click", () => {
+    typeWriter(phrases[index]);
+
+    index++;
+    if (index >= phrases.length) {
+        index = 0; // reinicia cuando llegue al final
+    }
+
+    if (audioElem.paused) playMusic();
+});
+
+playPause.addEventListener("click", () => {
+    if (audioElem.paused) playMusic();
+    else pauseMusic();
+});
+
+volSlider.addEventListener("input", () => {
+    audioElem.volume = parseFloat(volSlider.value);
+});
+</script>
+
+</body>
+</html>
